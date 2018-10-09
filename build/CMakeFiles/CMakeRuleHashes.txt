@@ -1,0 +1,13 @@
+# Hashes of file build rules.
+f05ad7228eca1439f6dcbf8afd4cd3e7 ../thrift/compiler/thriftl.cc
+fb51cecbb2eb7856d4a1b4a1ae51c27d ../thrift/compiler/thrifty.cc
+697b6b9d2216e5067fec67f88465b4b6 ../thrift/lib/cpp2/gen-cpp2/Sasl_constants.h
+fe0bdf34e873a6f3a48a2b57f89410b5 ../thrift/lib/thrift/gen-cpp/frozen_constants.h
+e605ca691c7c77742949775a70610138 ../thrift/lib/thrift/gen-cpp/reflection_constants.h
+db40658c26bc9350a95a680643b0f0b2 ../thrift/lib/thrift/gen-cpp2/RpcMetadata_constants.h
+fce3445abaf362305a5c0f0dac4fdd35 ../thrift/lib/thrift/gen-cpp2/frozen_constants.h
+6ea21848abf9845a74d5ca0b7fe5d65e thrift/lib/cpp2/CMakeFiles/Sasl-cpp2-target
+e30c8dd98ff47a727c4e1100666e1bf7 thrift/lib/thrift/CMakeFiles/RpcMetadata-cpp2-target
+e30c8dd98ff47a727c4e1100666e1bf7 thrift/lib/thrift/CMakeFiles/frozen-cpp-target
+e30c8dd98ff47a727c4e1100666e1bf7 thrift/lib/thrift/CMakeFiles/frozen-cpp2-target
+e30c8dd98ff47a727c4e1100666e1bf7 thrift/lib/thrift/CMakeFiles/reflection-cpp-target

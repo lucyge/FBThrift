@@ -1,0 +1,2 @@
+/usr/bin/ar cq ../../../lib/libprotocol.a  CMakeFiles/protocol.dir/protocol/TDebugProtocol.cpp.o CMakeFiles/protocol.dir/protocol/TJSONProtocol.cpp.o CMakeFiles/protocol.dir/protocol/TBase64Utils.cpp.o CMakeFiles/protocol.dir/protocol/TProtocolException.cpp.o CMakeFiles/protocol.dir/protocol/TSimpleJSONProtocol.cpp.o
+/usr/bin/ranlib ../../../lib/libprotocol.a

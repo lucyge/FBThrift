@@ -1,0 +1,2 @@
+/usr/bin/ar cq ../../../lib/libthriftfrozen2.a  CMakeFiles/thriftfrozen2.dir/frozen/Frozen.cpp.o CMakeFiles/thriftfrozen2.dir/frozen/FrozenUtil.cpp.o CMakeFiles/thriftfrozen2.dir/frozen/schema/MemorySchema.cpp.o CMakeFiles/thriftfrozen2.dir/protocol/Frozen2Protocol.cpp.o
+/usr/bin/ranlib ../../../lib/libthriftfrozen2.a

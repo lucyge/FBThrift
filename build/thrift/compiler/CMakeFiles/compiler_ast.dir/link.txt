@@ -1,0 +1,2 @@
+/usr/bin/ar cq ../../lib/libcompiler_ast.a  CMakeFiles/compiler_ast.dir/parse/t_program.cc.o CMakeFiles/compiler_ast.dir/parse/t_type.cc.o CMakeFiles/compiler_ast.dir/parse/t_typedef.cc.o
+/usr/bin/ranlib ../../lib/libcompiler_ast.a

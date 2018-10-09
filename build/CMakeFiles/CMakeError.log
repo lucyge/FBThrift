@@ -1,0 +1,36 @@
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/hemant/fbthrift/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTryCompileExec745654301/fast"
+gmake[1]: Entering directory `/home/hemant/fbthrift/build/CMakeFiles/CMakeTmp'
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec745654301.dir/build.make CMakeFiles/cmTryCompileExec745654301.dir/build
+gmake[2]: Entering directory `/home/hemant/fbthrift/build/CMakeFiles/CMakeTmp'
+/usr/local/bin/cmake -E cmake_progress_report /home/hemant/fbthrift/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec745654301.dir/CheckSymbolExists.c.o
+/opt/gcc64/bin/gcc    -o CMakeFiles/cmTryCompileExec745654301.dir/CheckSymbolExists.c.o   -c /home/hemant/fbthrift/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTryCompileExec745654301
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec745654301.dir/link.txt --verbose=1
+/opt/gcc64/bin/gcc       CMakeFiles/cmTryCompileExec745654301.dir/CheckSymbolExists.c.o  -o cmTryCompileExec745654301 -rdynamic 
+CMakeFiles/cmTryCompileExec745654301.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+gmake[2]: *** [cmTryCompileExec745654301] Error 1
+gmake[2]: Leaving directory `/home/hemant/fbthrift/build/CMakeFiles/CMakeTmp'
+gmake[1]: *** [cmTryCompileExec745654301/fast] Error 2
+gmake[1]: Leaving directory `/home/hemant/fbthrift/build/CMakeFiles/CMakeTmp'
+
+File /home/hemant/fbthrift/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
