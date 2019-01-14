@@ -143,9 +143,7 @@ class t_java_generator : public t_oop_generator {
   std::string isset_field_id(t_field* field);
 
   void generate_service_interface (t_service* tservice);
-  void generate_service_pausable_interface (t_service* tservice);
   void generate_service_async_interface(t_service* tservice);
-  void generate_service_async_pausable_interface(t_service* tservice);
   void generate_service_helpers   (t_service* tservice);
   void generate_service_client    (t_service* tservice);
   void generate_service_async_client(t_service* tservice);

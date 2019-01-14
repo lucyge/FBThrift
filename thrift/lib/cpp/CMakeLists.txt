@@ -142,9 +142,6 @@ add_library(
   server
 
   server/TServer.cpp
-  util/ServerCreatorBase.cpp
-  util/SyncServerCreator.cpp
-  util/TEventServerCreator.cpp
 )
 target_link_libraries(
   server

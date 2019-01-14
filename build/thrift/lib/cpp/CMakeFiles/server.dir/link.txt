@@ -1,2 +1,0 @@
-/usr/bin/ar cq ../../../lib/libserver.a  CMakeFiles/server.dir/server/TServer.cpp.o CMakeFiles/server.dir/util/ServerCreatorBase.cpp.o CMakeFiles/server.dir/util/SyncServerCreator.cpp.o CMakeFiles/server.dir/util/TEventServerCreator.cpp.o
-/usr/bin/ranlib ../../../lib/libserver.a

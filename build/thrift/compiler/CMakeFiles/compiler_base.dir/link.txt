@@ -1,2 +1,0 @@
-/usr/bin/ar cq ../../lib/libcompiler_base.a  CMakeFiles/compiler_base.dir/common.cc.o CMakeFiles/compiler_base.dir/platform.cc.o CMakeFiles/compiler_base.dir/thriftl.cc.o CMakeFiles/compiler_base.dir/thrifty.cc.o
-/usr/bin/ranlib ../../lib/libcompiler_base.a

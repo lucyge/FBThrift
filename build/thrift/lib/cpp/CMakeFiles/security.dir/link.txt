@@ -1,2 +1,0 @@
-/usr/bin/ar cq ../../../lib/libsecurity.a  CMakeFiles/security.dir/util/kerberos/Krb5Util.cpp.o CMakeFiles/security.dir/util/kerberos/Krb5OlderVersionStubs.cpp.o CMakeFiles/security.dir/util/kerberos/Krb5CredentialsCacheManager.cpp.o CMakeFiles/security.dir/util/kerberos/Krb5CCacheStore.cpp.o CMakeFiles/security.dir/util/kerberos/Krb5Tgts.cpp.o CMakeFiles/security.dir/util/kerberos/FBKrb5GetCreds.cpp.o
-/usr/bin/ranlib ../../../lib/libsecurity.a

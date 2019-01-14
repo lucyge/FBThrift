@@ -1,2 +1,0 @@
-/usr/bin/ar cq ../../../lib/libthrift-core.a  CMakeFiles/thrift-core.dir/Thrift.cpp.o
-/usr/bin/ranlib ../../../lib/libthrift-core.a

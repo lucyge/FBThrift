@@ -95,7 +95,6 @@ string t_java_generator::java_type_imports() {
     "import java.util.Collections;\n" +
     "import java.util.BitSet;\n" +
     "import java.util.Arrays;\n" +
-    "import killim.Pausable;\n" +
     "import org.slf4j.Logger;\n" +
     "import org.slf4j.LoggerFactory;\n\n";
 }
@@ -2098,10 +2097,8 @@ void t_java_generator::generate_service(t_service* tservice) {
   indent_up();
 
   // Generate the three main parts of the service
-  //generate_service_interface(tservice);
-  generate_service_pausable_interface(tservice);
-  //generate_service_async_interface(tservice);
-  generate_service_async_pausable_interface(tservice);
+  generate_service_interface(tservice);
+  generate_service_async_interface(tservice);
   generate_service_client(tservice);
   generate_service_async_client(tservice);
   generate_service_server(tservice);
@@ -2140,28 +2137,6 @@ void t_java_generator::generate_service_interface(t_service* tservice) {
   f_service_ << indent() << "}" << endl << endl;
 }
 
-void t_java_generator::generate_service_pausable_interface(t_service* tservice) {
-  string extends = "";
-  string extends_iface = "";
-  if (tservice->get_extends() != nullptr) {
-    extends = type_name(tservice->get_extends());
-    extends_iface = " extends " + extends + ".PausableIface";
-  }
-
-  generate_java_doc(f_service_, tservice);
-  f_service_ << indent() <<
-    "public interface PausableIface" << extends_iface << " {" << endl << endl;
-  indent_up();
-  vector<t_function*> functions = tservice->get_functions();
-  vector<t_function*>::iterator f_iter;
-  for (f_iter = functions.begin(); f_iter != functions.end(); ++f_iter) {
-    generate_java_doc(f_service_, *f_iter);
-    indent(f_service_) << "public " << function_signature(*f_iter) << ";" << endl << endl;
-  }
-  indent_down();
-  f_service_ << indent() << "}" << endl << endl;
-}
-
 void t_java_generator::generate_service_async_interface(t_service* tservice) {
   string extends = "";
   string extends_iface = "";
@@ -2172,27 +2147,6 @@ void t_java_generator::generate_service_async_interface(t_service* tservice) {
 
   f_service_ << indent() <<
     "public interface AsyncIface" << extends_iface << " {" << endl << endl;
-  indent_up();
-  vector<t_function*> functions = tservice->get_functions();
-  vector<t_function*>::iterator f_iter;
-  for (f_iter = functions.begin(); f_iter != functions.end(); ++f_iter) {
-    indent(f_service_) << "public " << function_signature_async(*f_iter, "resultHandler", true) << " throws TException;" << endl << endl;
-  }
-  indent_down();
-  f_service_ << indent() << "}" << endl << endl;
-}
-
-
-void t_java_generator::generate_service_async_pausable_interface(t_service* tservice) {
-  string extends = "";
-  string extends_iface = "";
-  if (tservice->get_extends() != nullptr) {
-    extends = type_name(tservice->get_extends());
-    extends_iface = " extends " + extends + ".AsyncPausableIface";
-  }
-
-  f_service_ << indent() <<
-    "public interface AsyncPausableIface" << extends_iface << " {" << endl << endl;
   indent_up();
   vector<t_function*> functions = tservice->get_functions();
   vector<t_function*>::iterator f_iter;
@@ -2620,13 +2574,13 @@ void t_java_generator::generate_service_server(t_service* tservice) {
 
   // Generate the header portion
   indent(f_service_) <<
-    "public static class Processor" << extends_processor << " implements TPausableProcessor {" << endl;
+    "public static class Processor" << extends_processor << " implements TProcessor {" << endl;
   indent_up();
 
   indent(f_service_) << "private static final Logger LOGGER = LoggerFactory.getLogger(Processor.class.getName());" << endl;
 
   indent(f_service_) <<
-    "public Processor(PausableIface iface)" << endl;
+    "public Processor(Iface iface)" << endl;
   scope_up(f_service_);
   if (!extends.empty()) {
     f_service_ <<
@@ -2650,8 +2604,8 @@ void t_java_generator::generate_service_server(t_service* tservice) {
 
   if (extends.empty()) {
     f_service_ <<
-      indent() << "protected static interface PausableProcessFunction {" << endl <<
-      indent() << "  public void process(int seqid, TProtocol iprot, TProtocol oprot, TConnectionContext server_ctx) throws TException, Pausable;" << endl <<
+      indent() << "protected static interface ProcessFunction {" << endl <<
+      indent() << "  public void process(int seqid, TProtocol iprot, TProtocol oprot, TConnectionContext server_ctx) throws TException;" << endl <<
       indent() << "}" << endl <<
       endl;
 
@@ -2664,7 +2618,7 @@ void t_java_generator::generate_service_server(t_service* tservice) {
   }
 
   f_service_ <<
-    indent() << "private PausableIface iface_;" << endl;
+    indent() << "private Iface iface_;" << endl;
 
   if (extends.empty()) {
     f_service_ <<
@@ -2673,14 +2627,14 @@ void t_java_generator::generate_service_server(t_service* tservice) {
 
   if (extends.empty()) {
     f_service_ <<
-      indent() << "protected final HashMap<String,PausableProcessFunction> processMap_ = new HashMap<String,PausableProcessFunction>();" << endl;
+      indent() << "protected final HashMap<String,ProcessFunction> processMap_ = new HashMap<String,ProcessFunction>();" << endl;
   }
 
   f_service_ << endl;
 
   // Generate the server implementation
   indent(f_service_) <<
-    "public boolean process(TProtocol iprot, TProtocol oprot, TConnectionContext server_ctx) throws TException, Pausable" << endl;
+    "public boolean process(TProtocol iprot, TProtocol oprot, TConnectionContext server_ctx) throws TException" << endl;
   scope_up(f_service_);
 
   f_service_ <<
@@ -2689,7 +2643,7 @@ void t_java_generator::generate_service_server(t_service* tservice) {
   // TODO(mcslee): validate message, was the seqid etc. legit?
 
   f_service_ <<
-    indent() << "PausableProcessFunction fn = processMap_.get(msg.name);" << endl <<
+    indent() << "ProcessFunction fn = processMap_.get(msg.name);" << endl <<
     indent() << "if (fn == null) {" << endl <<
     indent() << "  TProtocolUtil.skip(iprot, TType.STRUCT);" << endl <<
     indent() << "  iprot.readMessageEnd();" << endl <<
@@ -2754,12 +2708,12 @@ void t_java_generator::generate_process_function(t_service* tservice,
                                                  t_function* tfunction) {
   // Open class
   indent(f_service_) <<
-    "private class " << tfunction->get_name() << " implements PausableProcessFunction {" << endl;
+    "private class " << tfunction->get_name() << " implements ProcessFunction {" << endl;
   indent_up();
 
   // Open function
   indent(f_service_) <<
-    "public void process(int seqid, TProtocol iprot, TProtocol oprot, TConnectionContext server_ctx) throws TException, Pausable" << endl;
+    "public void process(int seqid, TProtocol iprot, TProtocol oprot, TConnectionContext server_ctx) throws TException" << endl;
   scope_up(f_service_);
 
   string argsname = tfunction->get_name() + "_args";

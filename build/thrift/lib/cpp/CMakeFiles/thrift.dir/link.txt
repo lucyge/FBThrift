@@ -1,2 +1,0 @@
-/usr/bin/ar cq ../../../lib/libthrift.a  CMakeFiles/thrift.dir/VirtualProfiling.cpp.o
-/usr/bin/ranlib ../../../lib/libthrift.a
