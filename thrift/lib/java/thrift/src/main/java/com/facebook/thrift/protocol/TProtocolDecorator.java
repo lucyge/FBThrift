@@ -23,6 +23,7 @@ import com.facebook.thrift.TException;
 import com.facebook.thrift.meta_data.FieldMetaData;
 
 import java.util.Map;
+import java.nio.ByteBuffer;
 
 /**
  * <code>TProtocolDecorator</code> forwards all requests to an enclosed
@@ -132,8 +133,8 @@ public abstract class TProtocolDecorator extends TProtocol {
         concreteProtocol.writeString(s);
     }
 
-    public void writeBinary(byte[] buf) throws TException {
-        concreteProtocol.writeBinary(buf);
+    public void writeBinary(ByteBuffer  bb) throws TException {
+        concreteProtocol.writeBinary(bb);
     }
 
     public TMessage readMessageBegin() throws TException {
@@ -216,7 +217,7 @@ public abstract class TProtocolDecorator extends TProtocol {
         return concreteProtocol.readString();
     }
 
-    public byte[] readBinary() throws TException {
+    public ByteBuffer readBinary() throws TException {
         return concreteProtocol.readBinary();
     }
 }

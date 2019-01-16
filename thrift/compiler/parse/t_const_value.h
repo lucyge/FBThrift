@@ -39,7 +39,12 @@ class t_const_value {
     CV_DOUBLE,
     CV_STRING,
     CV_MAP,
+#if 1
+    CV_LIST,
+    CV_IDENTIFIER
+#else
     CV_LIST
+#endif
   };
 
   t_const_value() {}
@@ -148,6 +153,44 @@ class t_const_value {
     return listVal_;
   }
 
+#if 1
+  void set_identifier(std::string val) {
+    valType_ = CV_IDENTIFIER;
+    identifierVal_ = val;
+  }
+
+  std::string get_identifier() const {
+    return identifierVal_;
+  }
+
+  std::string get_identifier_name() const {
+    std::string ret = get_identifier();
+    size_t s = ret.find('.');
+    if (s == std::string::npos) {
+      throw "error: identifier " + ret + " is unqualified!";
+    }
+    ret = ret.substr(s+1);
+    s = ret.find('.');
+    if (s != std::string::npos) {
+      ret = ret.substr(s+1);
+    }
+    return ret;
+  }
+
+  std::string get_identifier_with_parent() const {
+    std::string ret = get_identifier();
+    size_t s = ret.find('.');
+    if (s == std::string::npos) {
+      throw "error: identifier " + ret + " is unqualified!";
+    }
+    size_t s2 = ret.find('.', s+1);
+    if (s2 != std::string::npos) {
+      ret = ret.substr(s+1);
+    }
+    return ret;
+  }
+#endif
+
   t_const_value_type get_type() const {
     return valType_;
   }
@@ -214,6 +257,9 @@ class t_const_value {
   bool boolVal_;
   int64_t intVal_;
   double doubleVal_;
+#if 1
+  std::string identifierVal_;
+#endif
 
   t_const_value_type valType_;
   t_const* owner_ = nullptr;

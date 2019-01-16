@@ -712,6 +712,9 @@ ConstValue:
         }
         $$ = new t_const_value($1);
       }
+#if 1
+      $$->set_identifier($1);
+#endif
     }
 | ConstList
     {

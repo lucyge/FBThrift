@@ -16,7 +16,7 @@
 
 %><% > Autogen%>
 
-#include "<%service:include_prefix%><%service:name%>AsyncClient.h"
+#include "<%service:name%>AsyncClient.h"
 
 #include <folly/io/IOBuf.h>
 #include <folly/io/IOBufQueue.h>
@@ -71,6 +71,15 @@
 <%/function:returns_stream?%>
 <%/function:oneway?%>
 
+
+<%#function:oneway?%>
+<% > service_client_cpp/oneway_fiber_functions%>
+<%/function:oneway?%>
+<%^function:oneway?%>
+<%^function:returns_stream?%>
+<% > service_client_cpp/fiber_functions%>
+<%/function:returns_stream?%>
+<%/function:oneway?%>
 
 <%^function:oneway?%>
 <% > service_client_cpp/received_wrapped%>

@@ -89,6 +89,13 @@ public abstract class TTransport {
     }
     return got;
   }
+  
+  public int getSeqId() {
+      return 0;
+  }
+  
+  public void setSeqId(int seqId) {
+  }
 
   /**
    * Writes the buffer to the output

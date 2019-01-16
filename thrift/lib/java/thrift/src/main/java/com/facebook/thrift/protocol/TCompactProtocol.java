@@ -22,6 +22,7 @@ package com.facebook.thrift.protocol;
 
 import java.util.Map;
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 import com.facebook.thrift.ShortStack;
 import com.facebook.thrift.TException;
 import com.facebook.thrift.transport.TMemoryInputTransport;
@@ -325,8 +326,9 @@ public final class TCompactProtocol extends TProtocol {
   /**
    * Write a byte array, using a varint for the size.
    */
-  public void writeBinary(byte[] buf) throws TException {
-    writeBinary(buf, 0, buf.length);
+  public void writeBinary(ByteBuffer bb) throws TException {
+    int length = bb.limit() - bb.position();
+    writeBinary(bb.array(), bb.position() + bb.arrayOffset(), length);
   }
 
   private void writeBinary(byte[] buf, int offset, int length) throws TException {
@@ -685,9 +687,14 @@ public final class TCompactProtocol extends TProtocol {
   /**
    * Read a byte[] from the wire.
    */
-  public byte[] readBinary() throws TException {
+  public ByteBuffer readBinary() throws TException {
     int length = readVarint32();
-    return readBinary(length);
+    if (length == 0) 
+      return ByteBuffer.wrap(new byte[0]);
+
+    byte[] buf = new byte[length];
+    trans_.readAll(buf, 0, length);
+    return ByteBuffer.wrap(buf);
   }
 
   private byte[] readBinary(int length) throws TException {

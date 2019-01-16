@@ -25,6 +25,7 @@ import com.facebook.thrift.transport.TTransport;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Stack;
+import java.nio.ByteBuffer;
 
 /**
  * Base class for full and brief JSON protocols.
@@ -511,11 +512,11 @@ public abstract class TJSONProtocolBase extends TProtocol {
 
   // Write out contents of byte array b as a JSON string with base-64 encoded
   // data
-  protected void writeJSONBase64(byte[] b) throws TException {
+  protected void writeJSONBase64(byte[] b, int offset, int length) throws TException {
     context_.write();
     trans_.write(QUOTE);
-    int len = b.length;
-    int off = 0;
+    int len = length;
+    int off = offset;
     while (len >= 3) {
       // Encode 3 bytes at a time
       TBase64Utils.encode(b, off, 3, tmpbuf_, 0);
@@ -618,8 +619,8 @@ public abstract class TJSONProtocolBase extends TProtocol {
   }
 
   @Override
-  public void writeBinary(byte[] bin) throws TException {
-    writeJSONBase64(bin);
+  public void writeBinary(ByteBuffer bb) throws TException {
+    writeJSONBase64(bb.array(), bb.position() + bb.arrayOffset(), bb.limit() - bb.position() - bb.arrayOffset());
   }
 
   /**
@@ -971,8 +972,8 @@ public abstract class TJSONProtocolBase extends TProtocol {
   }
 
   @Override
-  public byte[] readBinary() throws TException {
-    return readJSONBase64();
+  public ByteBuffer readBinary() throws TException {
+    return ByteBuffer.wrap(readJSONBase64());
   }
 
 }

@@ -60,7 +60,12 @@ uint32_t RequestChannel::sendRequestSync(
     std::shared_ptr<apache::thrift::transport::THeader> header) {
   DCHECK(typeid(ClientSyncCallback) == typeid(*cb));
   bool oneway = static_cast<ClientSyncCallback&>(*cb).isOneway();
+#if 1
+  folly::EventBase eba;
+  folly::EventBase *eb =  &eba;
+#else
   auto eb = getEventBase();
+#endif
   CHECK(eb->isInEventBaseThread());
   auto scb = std::make_unique<ClientSyncEventBaseCallback>(std::move(cb), eb);
   if (oneway) {
@@ -70,7 +75,10 @@ uint32_t RequestChannel::sendRequestSync(
         std::move(ctx),
         std::move(buf),
         std::move(header));
+#if 1
+#else
     eb->loopForever();
+#endif
     return x;
   } else {
     auto x = sendRequest(
@@ -79,7 +87,10 @@ uint32_t RequestChannel::sendRequestSync(
         std::move(ctx),
         std::move(buf),
         std::move(header));
+#if 1
+#else
     eb->loopForever();
+#endif
     return x;
   }
 }

@@ -21,9 +21,11 @@ package com.facebook.thrift.protocol;
 
 import java.util.Map;
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 import com.facebook.thrift.TException;
 import com.facebook.thrift.transport.TMemoryInputTransport;
 import com.facebook.thrift.transport.TTransport;
+
 
 /**
  * Binary protocol implementation for thrift.
@@ -213,9 +215,10 @@ public class TBinaryProtocol extends TProtocol {
     }
   }
 
-  public void writeBinary(byte[] bin) throws TException {
-    writeI32(bin.length);
-    trans_.write(bin, 0, bin.length);
+  public void writeBinary(ByteBuffer bb) throws TException {
+    int length = bb.limit() - bb.position();
+    writeI32(length);
+    trans_.write(bb.array(), bb.position() + bb.arrayOffset(), length);
   }
 
   /**
@@ -390,12 +393,19 @@ public class TBinaryProtocol extends TProtocol {
     }
   }
 
-  public byte[] readBinary() throws TException {
+  public ByteBuffer readBinary() throws TException {
     int size = readI32();
     checkReadLength(size);
+
+    if (trans_.getBytesRemainingInBuffer() >= size) {
+      ByteBuffer bb = ByteBuffer.wrap(trans_.getBuffer(), trans_.getBufferPosition(), size);
+      trans_.consumeBuffer(size);
+      return bb;
+    }
+
     byte[] buf = new byte[size];
     trans_.readAll(buf, 0, size);
-    return buf;
+    return ByteBuffer.wrap(buf);
   }
 
 

@@ -22,16 +22,16 @@
 #include <thrift/lib/cpp2/ServiceIncludes.h>
 #include <thrift/lib/cpp2/async/FutureRequest.h>
 #include <thrift/lib/cpp2/async/HeaderChannel.h>
-#include "<%service:include_prefix%><%service:name%>AsyncClient.h"
-#include "<%service:include_prefix%><%service:program_name%>_types.h"
+#include "<%service:name%>AsyncClient.h"
+#include "<%service:program_name%>_types.h"
 <%#service:frozen2?%>
-#include "<%service:include_prefix%><%service:program_name%>_layouts.h"
+#include "<%service:program_name%>_layouts.h"
 <%/service:frozen2?%>
 <%#service:extends%>
-#include "<%service:include_prefix%><%service:name%>.h"
+#include "<%service:name%>.h"
 <%/service:extends%>
 <%#service:thrift_includes%>
-#include "<%program:include_prefix%><%program:name%>_types.h"
+#include "<%program:name%>_types.h"
 <%/service:thrift_includes%>
 <%#service:cpp_includes%>
 #include <%cpp_include%>

@@ -20,12 +20,14 @@ package com.facebook.thrift.protocol;
 
 import java.util.List;
 import java.util.Map;
+import java.nio.ByteBuffer;
 
 import com.facebook.thrift.TApplicationException;
 import com.facebook.thrift.TException;
 import com.facebook.thrift.transport.THeaderException;
 import com.facebook.thrift.transport.THeaderTransport;
 import com.facebook.thrift.transport.TTransport;
+
 
 /**
  * Pass through protocol for use with THeaderTransport servers
@@ -205,8 +207,8 @@ public class THeaderProtocol extends TProtocol {
   }
 
   @Override
-  public void writeBinary(byte[] bin) throws TException {
-    proto.writeBinary(bin);
+  public void writeBinary(ByteBuffer bb) throws TException {
+    proto.writeBinary(bb);
   }
 
   /**
@@ -238,7 +240,10 @@ public class THeaderProtocol extends TProtocol {
       // Such as unknown transforms or protocols.  Endpoint may retry
       notifyEndpoint(e.toString());
     }
-    return proto.readMessageBegin();
+    TMessage msg =  proto.readMessageBegin();
+    int seqid = ((THeaderTransport)trans_).getSeqId();
+    msg.setSeqid(seqid);
+    return msg;
   }
 
   @Override
@@ -337,7 +342,7 @@ public class THeaderProtocol extends TProtocol {
   }
 
   @Override
-  public byte[] readBinary() throws TException {
+  public ByteBuffer readBinary() throws TException {
     return proto.readBinary();
   }
 }

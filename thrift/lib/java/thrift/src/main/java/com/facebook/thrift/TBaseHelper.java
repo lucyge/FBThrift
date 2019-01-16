@@ -161,6 +161,18 @@ public final class TBaseHelper {
     return 0;
   }
 
+  public static int compareTo(ByteBuffer a, ByteBuffer b) {
+    if (a == null && b == null) {
+      return 0;
+    } else if (a == null) {
+      return -1;
+    } else if (b == null) {
+      return +1;
+    }
+
+    return a.compareTo(b);
+  }
+
   public static <T> int compareTo(List<T> a, List<T> b) {
     if (a == null && b == null) {
       return 0;
@@ -470,6 +482,20 @@ public final class TBaseHelper {
     return orig;  // immutable
   }
 
+  public static ByteBuffer deepCopy(ByteBuffer orig) {
+    if (orig == null) {
+      return null;
+    }
+    ByteBuffer copy = ByteBuffer.wrap(new byte[orig.remaining()]);
+    if (orig.hasArray()) {
+      System.arraycopy(orig.array(), orig.arrayOffset() + orig.position(), copy.array(), 0, orig.remaining());
+    } else {
+      orig.slice().get(copy.array());
+    }
+
+    return copy;
+  }
+    
   public static <K, V> Map<K, V> deepCopy(Map<K, V> orig) {
     if (orig == null) {
       return null;
@@ -696,6 +722,15 @@ public final class TBaseHelper {
   }
 
   /**
+   * Checks two items for logical equality.
+   * @param a non-null item
+   * @param b non-null item
+   */
+  public static boolean equalsNobinary(ByteBuffer a, ByteBuffer b) {
+    return a.equals(b);
+  }
+
+  /**
    * Checks two items for logical equality. The items should not contain
    * "naked binaries"; that is, neither keys nor values can be <code>byte[]</code>
    * or containers which themselves contain naked binaries. The key type and
@@ -759,6 +794,15 @@ public final class TBaseHelper {
    */
   public static boolean equalsSlow(byte[] a, byte[] b) {
     return Arrays.equals(a, b);
+  }
+
+  /**
+   * Checks two items for logical equality.
+   * @param a non-null item
+   * @param b non-null item
+   */
+  public static boolean equalsSlow(ByteBuffer a, ByteBuffer b) {
+    return Arrays.equals(a.array(), b.array());
   }
 
   /**

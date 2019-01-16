@@ -48,8 +48,11 @@
 <%^type:stream?%>
   virtual folly::Future<<% > types/service_type%>> future_<%function:name%>(<% > service_common/function_param_list_const%>);
   virtual folly::Future<<% > types/service_type%>> future_<%function:name%>(apache::thrift::RpcOptions& rpcOptions<%function:comma%><% > service_common/function_param_list_const%>);
+  virtual std::shared_ptr<folly::fibers::HPromise<<% > types/service_type%>>> fiber_<%function:name%>(<% > service_common/function_param_list_const%>);
+  virtual std::shared_ptr<folly::fibers::HPromise<<% > types/service_type%>>> fiber_<%function:name%>(apache::thrift::RpcOptions& rpcOptions<%function:comma%><% > service_common/function_param_list_const%>);
 <%^function:oneway?%>
   virtual folly::Future<std::pair<<% > types/service_type%>, std::unique_ptr<apache::thrift::transport::THeader>>> header_future_<%function:name%>(apache::thrift::RpcOptions& rpcOptions<%function:comma%><% > service_common/function_param_list_const%>);
+  virtual std::shared_ptr<folly::fibers::HPromise<std::pair<<% > types/service_type%>, std::unique_ptr<apache::thrift::transport::THeader>>>> header_fiber_<%function:name%>(apache::thrift::RpcOptions& rpcOptions<%function:comma%><% > service_common/function_param_list_const%>);
 <%/function:oneway?%>
 <%/type:stream?%>
 <%^function:returns_stream?%>

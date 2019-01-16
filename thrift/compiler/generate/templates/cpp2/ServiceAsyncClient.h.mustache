@@ -18,18 +18,20 @@
 #pragma once
 
 #include <folly/futures/Future.h>
+#include <folly/fibers/HPromise.h>
 #include <thrift/lib/cpp/TApplicationException.h>
 #include <thrift/lib/cpp2/async/AsyncClient.h>
 #include <thrift/lib/cpp2/async/FutureRequest.h>
-#include "<%service:include_prefix%><%service:program_name%>_types.h"
+#include <thrift/lib/cpp2/async/FiberRequest.h>
+#include "<%service:program_name%>_types.h"
 <%#service:frozen2?%>
-#include "<%service:include_prefix%><%service:program_name%>_layouts.h"
+#include "<%service:program_name%>_layouts.h"
 <%/service:frozen2?%>
 <%#service:extends%>
-#include "<%service:include_prefix%><%service:name%>AsyncClient.h"
+#include "<%service:name%>AsyncClient.h"
 <%/service:extends%>
 <%#service:thrift_includes%>
-#include "<%program:include_prefix%><%program:name%>_types.h"
+#include "<%program:name%>_types.h"
 <%/service:thrift_includes%>
 <%#service:cpp_includes%>
 #include <%cpp_include%>

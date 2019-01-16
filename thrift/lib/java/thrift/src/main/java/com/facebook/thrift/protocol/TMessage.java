@@ -36,8 +36,13 @@ public final class TMessage {
 
   public final String name;
   public final byte type;
-  public final int seqid;
+  public int seqid;
 
+  public void setSeqid(int seqid)
+  {
+      this.seqid = seqid;
+  }
+  
   @Override
   public String toString() {
     return "<TMessage name:'" + name + "' type: " + type + " seqid:" + seqid + ">";

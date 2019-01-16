@@ -489,7 +489,11 @@ void validate_const_rec(std::string name, t_type* type, t_const_value* value) {
                    t_base_type::t_base_name(tbase) + name);
     }
   } else if (type->is_enum()) {
+#if 1
+    if (value->get_type() != t_const_value::CV_IDENTIFIER) {
+#else
     if (value->get_type() != t_const_value::CV_INTEGER) {
+#endif
       throw string("type error: const \"" + name + "\" was declared as enum");
     }
     const auto as_enum = dynamic_cast<t_enum*>(type);

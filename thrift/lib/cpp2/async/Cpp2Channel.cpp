@@ -64,6 +64,10 @@ Cpp2Channel::Cpp2Channel(
       return protectionHandler_->getProtectionState() ==
           ProtectionHandler::ProtectionState::VALID;
   });
+
+#if 1
+  outputBufferingHandler_->queueSends_ = false;
+#endif
   pipeline_ = Pipeline::create(
       TAsyncTransportHandler(transport),
       outputBufferingHandler_,

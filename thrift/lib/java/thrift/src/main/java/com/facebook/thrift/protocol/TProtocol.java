@@ -26,6 +26,8 @@ import com.facebook.thrift.TException;
 import com.facebook.thrift.transport.TTransport;
 import com.facebook.thrift.meta_data.FieldMetaData;
 
+import java.nio.ByteBuffer;
+
 /**
  * Protocol interface definition.
  *
@@ -104,7 +106,7 @@ public abstract class TProtocol {
 
   public abstract void writeString(String str) throws TException;
 
-  public abstract void writeBinary(byte[] bin) throws TException;
+  public abstract void writeBinary(ByteBuffer bb) throws TException;
 
   /**
    * Reading methods.
@@ -189,7 +191,7 @@ public abstract class TProtocol {
 
   public abstract String readString() throws TException;
 
-  public abstract byte[] readBinary() throws TException;
+  public abstract ByteBuffer readBinary() throws TException;
 
   /**
    * Reset any internal state back to a blank slate. This method only needs to
