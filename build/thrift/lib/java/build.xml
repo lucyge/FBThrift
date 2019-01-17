@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="build" name="thrift">
+    <property environment="env"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+
+    <property name="basedir" value="."/>
+    <property name="unified.lib" value="../../../../../deplibs"/>
+    <property name="build.src" value="../../../../thrift/lib/java/thrift/src/main/java"/>
+    <property name="build.lib" value="${basedir}/lib"/>
+    <property name="build.dir" value="${basedir}/build"/>
+    <property name="kilim.lib" value="../../../../../kilim"/>
+    <property name="common.lib" value="../../../../../Hedvig-Common/build"/>
+    <property name="hpod.dir" value="../../../../../QuexaPod/lib"/>
+    <property name="cass.dir" value="../../../../../Cassandra/lib"/>
+    <property name="qbd.dir" value="../../../../../QuexaBlockDevice/server/lib"/>
+    <property name="hedvig.lib" value="../../../../../hedviglibs"/>
+    <property name="build.classes" value="${build.dir}/classes"/>
+    <property name="build.runtime.classes" value="${build.dir}/runtime-classes"/>
+    <property name="final.compiletime.name" value="libthrift-compiletime"/>
+    <property name="final.runtime.name" value="libthrift"/>
+  
+    <!-- Glob a list of .j files into a space-separated list -->
+   <pathconvert property="dotjfiles" pathsep=" ">
+      <path>
+         <fileset dir="${build.src}" includes="**/*.j" />
+      </path>
+  </pathconvert>
+
+    <!--
+	 Add all the dependencies.
+    -->
+    <path id="thrift.classpath">
+        <pathelement location="${build.classes}"/>
+        <pathelement location="${unified.lib}/asm-all-5.0.2.jar"/>
+        <pathelement location="${unified.lib}/org.json-20120521.jar"/>
+        <pathelement location="${common.lib}/hedvig-common-compiletime.jar"/>
+        <pathelement location="${kilim.lib}/kilim.jar"/>
+        <pathelement location="${build.lib}/log4j-1.2.15.jar"/>
+        <pathelement location="${build.lib}/servlet-api-2.5.jar"/>
+        <pathelement location="${build.lib}/slf4j-log4j12-1.5.8.jar"/>
+        <pathelement location="${build.lib}/slf4j-api-1.5.8.jar"/>
+        <pathelement location="${build.lib}/disruptor.jar"/>
+        <pathelement location="${build.lib}/jna.jar"/>
+        <pathelement location="${build.lib}/httpclient-4.1.3.jar"/>
+        <pathelement location="${build.lib}/httpcore-4.1.3.jar"/>
+        <pathelement location="${build.lib}/commons-codec-1.4.jar"/>
+        <pathelement location="${build.lib}/commons-lang-2.5.jar"/>
+        <pathelement location="${build.lib}/commons-logging-1.1.1.jar"/>
+        <pathelement location="${build.lib}/snappy-0.4.jar"/>
+    </path>
+
+    <!--r
+	Setup the output directories.
+    -->
+    <target name="init">
+        <mkdir dir="${build.classes}"/>
+    </target>
+    <target name="clean">
+        <delete dir="${build.dir}" />
+    </target>
+    <target depends="clean" name="cleanall"/>
+
+    <!--
+	The build target builds all the .class files
+    -->
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="${build.classes}" includeantRuntime="false">
+            <src path="${build.src}"/>
+            <classpath refid="thrift.classpath"/>
+        </javac>
+    </target>
+
+    <target name="-timestamp">
+        <tstamp>
+            <format property="timestamp" pattern="yyyy-MM-dd'T'HH:mm'Z'"/>
+            <format property="build.date" pattern="yyyy-MM-dd"/>
+        </tstamp>
+    </target>
+
+    <!--
+     Gets the git branch information
+     -->
+    <target name="branchInfo">
+        <!-- get a new version string using git describe if possible -->
+        <exec executable="git" outputproperty="branch"
+            failifexecutionfails="false">        
+            <arg value="rev-parse"/>
+                <arg value="--abbrev-ref"/>
+                <arg value="HEAD"/>
+        </exec>
+    </target>
+    
+    <!--
+     Gets the git commitId
+     -->
+    <target name="commitId" depends="-timestamp">
+        <!-- get a new version string using git describe if possible -->
+        <exec executable="git" outputproperty="commitId"
+            failifexecutionfails="false">
+            <arg value="rev-parse"/>
+            <arg value="HEAD"/>
+        </exec>
+    </target>
+
+    <!--
+	The jar target makes thrift.jar output.
+    -->
+    <target name="jar" depends="build, branchInfo, commitId">
+	<manifestclasspath property="mf.classpath" jarfile="${build.dir}/${final.compiletime.name}.jar">
+                <classpath>
+                    <fileset dir="${build.lib}" includes="*.jar"/>
+                </classpath>
+            </manifestclasspath>
+
+	
+    <jar jarfile="${build.dir}/${final.compiletime.name}.jar"
+         basedir="${build.classes}">
+      <manifest>
+	<attribute name="Created-By" value="Hedvig"/>
+                    <attribute name="Module" value="Hedvig-Thrift"/>
+                    <attribute name="CommitId" value="${commitId}"/>
+                    <attribute name="Branch" value="${branch}"/>
+                    <attribute name="Build-Timestamp" value="${timestamp}"/>
+                    <attribute name="Build-Date" value="${build.date}"/>
+                    <attribute name="Class-Path" value="${mf.classpath}"/>
+      </manifest>
+    </jar>
+    <copy file="${build.dir}/${final.compiletime.name}.jar" tofile="${cass.dir}/${final.compiletime.name}.jar" />
+    <copy file="${build.dir}/${final.compiletime.name}.jar" tofile="${qbd.dir}/${final.compiletime.name}.jar" />
+    <copy file="${build.dir}/${final.compiletime.name}.jar" tofile="${hpod.dir}/${final.compiletime.name}.jar" />
+    <copy file="${build.dir}/${final.compiletime.name}.jar" tofile="${hedvig.lib}/${final.compiletime.name}.jar" />
+  </target>
+    
+  <target name="runtime-jar" depends="jar, weave">
+    <copy file="${build.dir}/${final.compiletime.name}.jar" tofile="${build.dir}/${final.runtime.name}.jar" />
+    <jar update="true" jarfile="${build.dir}/${final.runtime.name}.jar"
+         basedir="${build.runtime.classes}">
+      <manifest>
+        <!-- <section name="org/apache/thrift/infrastructure"> -->
+          <attribute name="Implementation-Title" value="Thrift"/>
+          <attribute name="Implementation-Version" value="v2018.01.01.00"/>
+          <attribute name="Implementation-Vendor" value="Hedvig"/>
+        <!-- </section> -->
+      </manifest>
+    </jar>
+   <copy file="${build.dir}/${final.runtime.name}.jar" tofile="${cass.dir}/${final.runtime.name}.jar" />
+   <copy file="${build.dir}/${final.runtime.name}.jar" tofile="${qbd.dir}/${final.runtime.name}.jar" />
+   <copy file="${build.dir}/${final.runtime.name}.jar" tofile="${hpod.dir}/${final.runtime.name}.jar" />
+   <copy file="${build.dir}/${final.runtime.name}.jar" tofile="${hedvig.lib}/${final.runtime.name}.jar" />
+  </target>
+
+  <target name="weave" depends="jar" description="handles Kilim byte code weaving">
+  <echo message="${build.classes}" />
+  <java classname="kilim.tools.Weaver" fork="yes">
+     <classpath refid="thrift.classpath" />
+     <arg value="-d" />
+     <arg value="${build.runtime.classes}" />
+     <arg line="${build.dir}/${final.compiletime.name}.jar" />
+  </java>
+  </target>
+
+</project>
