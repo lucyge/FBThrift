@@ -22,6 +22,9 @@ package com.facebook.thrift.protocol;
 import java.util.Map;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+
+import org.apache.cassandra.common.io.ByteBufferPool;
+
 import com.facebook.thrift.TException;
 import com.facebook.thrift.transport.TMemoryInputTransport;
 import com.facebook.thrift.transport.TTransport;
@@ -397,15 +400,32 @@ public class TBinaryProtocol extends TProtocol {
     int size = readI32();
     checkReadLength(size);
 
-    if (trans_.getBytesRemainingInBuffer() >= size) {
-      ByteBuffer bb = ByteBuffer.wrap(trans_.getBuffer(), trans_.getBufferPosition(), size);
-      trans_.consumeBuffer(size);
-      return bb;
+    ByteBuffer bb = null;
+    if (trans_.getBytesRemainingInBuffer() >= size)
+    {
+    	if (!usenative_)
+    		bb = ByteBuffer.wrap(trans_.getBuffer(), trans_.getBufferPosition(), size);
+    	else
+    	{
+    		bb = ByteBufferPool.instance().getBuffer(true, size);
+    		bb.put(trans_.getBuffer(), trans_.getBufferPosition(), size);
+    		bb.flip();
+    	}
+    	trans_.consumeBuffer(size);
+    	return bb;
     }
 
     byte[] buf = new byte[size];
     trans_.readAll(buf, 0, size);
-    return ByteBuffer.wrap(buf);
+    if (!usenative_)
+    	bb = ByteBuffer.wrap(buf, 0, size);
+    else
+    {
+    	bb = ByteBufferPool.instance().getBuffer(true, size);
+    	bb.put(buf, 0, size);
+    	bb.flip();
+    }
+    return bb;
   }
 
 
