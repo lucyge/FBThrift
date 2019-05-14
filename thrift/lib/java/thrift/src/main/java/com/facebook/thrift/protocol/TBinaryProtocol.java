@@ -35,17 +35,24 @@ import com.facebook.thrift.transport.TTransport;
  *
  */
 public class TBinaryProtocol extends TProtocol {
+  private static final String USENATIVE = "usenative";
   private static final TStruct ANONYMOUS_STRUCT = new TStruct();
 
   public static final int VERSION_MASK = 0xffff0000;
   public static final int VERSION_1 = 0x80010000;
 
+  protected static boolean usenative_ = false;
   protected boolean strictRead_ = false;
   protected boolean strictWrite_ = true;
 
   protected int readLength_;
   protected boolean checkReadLength_ = false;
 
+  static
+  {
+      usenative_ = Boolean.parseBoolean(System.getProperty(USENATIVE));
+  }
+  
   /**
    * Factory
    */
