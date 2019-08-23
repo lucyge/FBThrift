@@ -19,6 +19,8 @@
 
 package com.facebook.thrift.transport;
 
+import com.facebook.thrift.transport.TTransport;
+
 import com.facebook.thrift.TByteArrayOutputStream;
 
 /**
@@ -124,6 +126,10 @@ public class TFramedTransport extends TTransport {
   @Override
   public void consumeBuffer(int len) {
     readBuffer_.consumeBuffer(len);
+  }
+  
+  public TTransport getTransport() {
+	return transport_;
   }
 
   private final byte[] i32buf = new byte[4];
